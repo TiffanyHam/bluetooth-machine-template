@@ -1,4 +1,4 @@
-# coffee-machine-template
+# bluetooth-machine-template
 
 ## Project setup
 ```
