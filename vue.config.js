@@ -5,9 +5,9 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 module.exports = {
-  publicPath: "/",
+  publicPath: "./",
   outputDir: "dist",
-  assetsDir: "static",
+  assetsDir: "./static",
   productionSourceMap: false,
   devServer: {
     port: 8080,
