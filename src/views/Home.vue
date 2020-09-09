@@ -12,49 +12,50 @@ export default {
       serviceId: "0000180a-0000-1000-8000-00805f9b34fb",
       characteristicId: "00002a23-0000-1000-8000-00805f9b34fb",
       deviceId: "",
-      disabled: true
+      disabled: true,
+      info: {
+        errCode: "0",
+        fileKey:
+          "24fd2e02f1fc99f3c4f33a97ed22180d881b18ff0b5b4f4d7b4ad61973255dbf"
+      },
+      keyN: ""
     };
   },
   mounted() {},
   methods: {
+    //下载
     downloadBtn() {
       window.downloadCallback = info => {
         // eslint-disable-next-line no-unused-vars
         let data = JSON.parse(info);
-        console.log("下载", info);
+        console.log("下载操作响应数据：", info);
+        this.getData(data.fileKey);
       };
       window.hilink.downloadFile(
-        "https://192.168.1.119:8443/download/1.jar",
+        "http://5g.roaman.vip/uploadfilegujian/20200909/20200909161648.zip",
         "Cube.bin",
         "downloadCallback"
       );
     },
+    getData(KEY) {
+      this.keyN = window.hilink.getStorageSync(KEY);
+      console.log("获取data数据：", this.keyN);
+    },
+    //写入数据
     writeValue() {
       let that = this;
       window.hilink.writeBLECharacteristicValue(
         that.deviceId,
         that.serviceId,
         that.characteristicId,
-        "010941000A",
+        that.keyN,
         "writeBLECharacteristicValueCallBack"
       );
+      console.log("666666", that.keyN);
       window.writeBLECharacteristicValueCallBack = res => {
-        let data = JSON.parse(res);
-        console.log("writeBLECharacteristicValueCallBack:", data);
-        //deviceId = data.deviceId;
+        // let data = JSON.parse(res);
+        console.log("writeBLECharacteristicValueCallBack:", res);
       };
-    },
-    getSystemInfo() {
-      //设备信息
-      window.getSystemInfoSyncCallBack = info => {
-        let data = JSON.parse(info);
-        if (data.platform == "iOS") {
-          console.log("iOS设备");
-        } else {
-          console.log("andorid设备");
-        }
-      };
-      window.hilink.getSystemInfoSync("getSystemInfoSyncCallBack");
     }
   }
 };

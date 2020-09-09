@@ -4,10 +4,11 @@ const path = require("path");
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
+debugger;
 module.exports = {
-  publicPath: "./",
+  publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
   outputDir: "dist",
-  assetsDir: "./static",
+  assetsDir: "static",
   productionSourceMap: false,
   devServer: {
     port: 8080,

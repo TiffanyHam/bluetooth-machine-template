@@ -1,5 +1,6 @@
 <template>
   <div class="CoffeeIndex">
+    <div style="height:65px;"></div>
     <!-- 咖啡机信息 -->
     <div class="machineInfo wa">
       <!-- 咖啡机图片 -->
@@ -143,7 +144,7 @@
         <div v-show="fold" class="log-main">
           <div class="date_title">
             <span>今天</span>
-            <span>星期一</span>
+            <!-- <span>星期一</span> -->
           </div>
           <div class="item" v-for="item of list" :key="item.id">
             <div class="content">
