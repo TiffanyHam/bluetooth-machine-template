@@ -1,7 +1,19 @@
 <template>
   <div class="home">
-    <button @click="downloadBtn">下载</button>
-    <button @click="writeValue">写入数据</button>
+    <button
+      @click="downloadBtn"
+      :disabled="disabled"
+      :class="disabled === true ? 'colorChange' : 'btnColor'"
+    >
+      下载
+    </button>
+    <button
+      :disabled="disabled1"
+      :class="disabled1 === true ? 'colorChange' : 'btnColor'"
+      @click="writeValue"
+    >
+      写入数据
+    </button>
   </div>
 </template>
 <script>
@@ -9,26 +21,34 @@ export default {
   name: "Home",
   data() {
     return {
-      serviceId: "0000180a-0000-1000-8000-00805f9b34fb",
-      characteristicId: "00002a23-0000-1000-8000-00805f9b34fb",
+      serviceId: "0000FFB0-0000-1000-8000-00805F9B34FB",
+      characteristicId: "0000FFB2-0000-1000-8000-00805F9B34FB",
+      writeCharacteristicId: "0000FFB1-0000-1000-8000-00805F9B34FB",
       deviceId: "",
-      disabled: true,
-      info: {
-        errCode: "0",
-        fileKey:
-          "24fd2e02f1fc99f3c4f33a97ed22180d881b18ff0b5b4f4d7b4ad61973255dbf"
-      },
+      disabled: false,
+      disabled1: false,
+      //   info: {
+      //     errCode: "0",
+      //     fileKey:
+      //       "24fd2e02f1fc99f3c4f33a97ed22180d881b18ff0b5b4f4d7b4ad61973255dbf"
+      //   },
       keyN: ""
     };
   },
-  mounted() {},
+  mounted() {
+    this.getUnRegisterDeviceFun();
+  },
   methods: {
-    //下载
+    /**
+     * 下载
+     */
     downloadBtn() {
+      this.disabled = true;
       window.downloadCallback = info => {
+        this.disabled = false;
         // eslint-disable-next-line no-unused-vars
         let data = JSON.parse(info);
-        console.log("下载操作响应数据：", info);
+        console.log("下载操作---响应数据：", info);
         this.getData(data.fileKey);
       };
       window.hilink.downloadFile(
@@ -41,18 +61,37 @@ export default {
       this.keyN = window.hilink.getStorageSync(KEY);
       console.log("获取data数据：", this.keyN);
     },
-    //写入数据
+
+    /**
+     * 获取当前页面被选中的未注册的设备
+     */
+    getUnRegisterDeviceFun() {
+      window.getCurrentUnregisteredDeviceCallback = res => {
+        let data = JSON.parse(res);
+        this.deviceId = data.deviceId;
+        console.log("获取A的MAC地址(ios的uuid)：", data.deviceId);
+      };
+      window.hilink.getCurrentUnregisteredDevice(
+        "getCurrentUnregisteredDeviceCallback"
+      );
+    },
+
+    /**
+     * 写入数据
+     */
+
     writeValue() {
-      let that = this;
+      this.disabled1 = true;
       window.hilink.writeBLECharacteristicValue(
-        that.deviceId,
-        that.serviceId,
-        that.characteristicId,
-        that.keyN,
+        this.deviceId,
+        this.serviceId,
+        this.characteristicId,
+        this.keyN,
         "writeBLECharacteristicValueCallBack"
       );
-      console.log("666666", that.keyN);
+      console.log("测试：", this.characteristicId);
       window.writeBLECharacteristicValueCallBack = res => {
+        this.disabled1 = false;
         // let data = JSON.parse(res);
         console.log("writeBLECharacteristicValueCallBack:", res);
       };
@@ -65,10 +104,15 @@ export default {
   width: 70px;
   height: 30px;
   border: none;
-  background: #007dff;
   border-radius: 6px;
   margin: 20px;
   color: #fff;
   font-size: 14px;
+}
+.btnColor {
+  background: #007dff;
+}
+.colorChange {
+  background: #ccc;
 }
 </style>
