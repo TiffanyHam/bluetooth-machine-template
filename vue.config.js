@@ -1,10 +1,17 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: Tiffany
+ * @Date: 2020-08-26 17:45:50
+ * @LastEditors: Tiffany
+ * @LastEditTime: 2020-09-25 17:45:33
+ */
 "use strict";
 const path = require("path");
 
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
-debugger;
 module.exports = {
   publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
   outputDir: "dist",

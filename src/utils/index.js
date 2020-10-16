@@ -1,23 +1,17 @@
-// //1监听蓝牙状态变化的事件
-// window.hilink.onBluetoothAdapterStateChange();
-// //2监听低功耗蓝牙连接状态的改变事件。
-// window.hilink.onBLEConnectionStateChange();
-// //3获取本机蓝牙模块状态;
-// window.hilink.getBluetoothAdapterState();
-// //4.蓝牙是否打开 当前设备缓存信息
-// let flag; //打开状态
-// if (flag) {
-//   window.hilink.getCurrentRegisteredDevice();
-// } else {
-//   //请求打开蓝牙
-//   window.hilink.openBluetoothAdapter();
-// }
-
-// //5.开始扫描蓝牙设备
-// window.hilink.onBluetoothDeviceFound();
-// //开始扫描
-// window.hilink.startBluetoothDevicesDiscovery();
-
-// //6  Android ios
-
-// //7
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: Tiffany
+ * @Date: 2020-08-26 18:02:25
+ * @LastEditors: Tiffany
+ * @LastEditTime: 2020-10-16 17:22:14
+ */
+const INFO = {
+  SERVICE_ID: "00001810-0000-1000-8000-00805f9b34fb", //蓝牙特征值对应服务的 uuid
+  CHARACTERISTIC_ID: "00002a35-0000-1000-8000-00805f9b34fb", //蓝牙特征值的 uuid
+  TEMPERAT_TYPE: "HDK_BLOOD_PRESSURE" //设备类型
+};
+export default {
+  //将常量暴露出去
+  INFO
+};
