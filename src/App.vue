@@ -4,28 +4,26 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-02 09:13:16
+ * @LastEditTime: 2020-11-05 10:49:08
 -->
 <template>
-  <div id="app" :class="dark ? 'theme-dark' : ''">
+  <div id="app">
     <router-view />
   </div>
 </template>
 <script>
 export default {
   data() {
-    return {
-      dark: false
-    };
+    return {};
   },
   created() {
-    this.dark = window.hilink && window.hilink.getDarkMode() === 2;
-    window.isDark = this.dark;
+    // this.dark = window.hilink && window.hilink.getDarkMode() === 2;
+    // window.isDark = this.dark;
     // createCb(this, ['rescb']);
     // callHilinkFn('getDarkMode', ['0', 'rescb']);
   },
   methods: {
-    createCb(res) {}
+    // createCb(res) {}
   }
 };
 </script>

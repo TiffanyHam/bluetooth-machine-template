@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-05 10:31:22
+ * @LastEditTime: 2020-11-05 15:03:10
 -->
 <template>
   <div class="temperature">
@@ -12,7 +12,7 @@
     <!-- <v-header pageName="测量" :iconImg="iconImg" :hasIcon="false"></v-header> -->
     <!-- image -->
     <div class="info">
-      <img src="@/assets/image/public/omron.png" width="100%" alt="" />
+      <img src="@/assets/image/public/omron.png" width="80%" alt="" />
     </div>
     <!-- text -->
     <div class="steps">
@@ -45,6 +45,7 @@ export default {
     this.iconImg = require("@/assets/image/public/ic_public_close.png");
   },
   mounted() {
+    // setTimeout(() => {
     let that = this;
     that.deviceId = window.hilink.getDeviceId();
 
@@ -75,6 +76,7 @@ export default {
     );
     //创建蓝牙连接
     window.hilink.createBLEConnection(that.deviceId);
+    // }, 10000); //10秒
   },
   methods: {
     /**
@@ -94,7 +96,7 @@ export default {
     changeBleConnectionStateCallback(res) {
       let data = JSON.parse(res);
       console.log("2.连接监听结果", data);
-      if (data.connectState) {
+      if (data.connected) {
         console.log("已连接");
       } else {
         console.log("连接失败");
