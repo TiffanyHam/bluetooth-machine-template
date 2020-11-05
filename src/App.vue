@@ -1,9 +1,34 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Tiffany
+ * @Date: 2020-08-26 17:41:01
+ * @LastEditors: Tiffany
+ * @LastEditTime: 2020-11-02 09:13:16
+-->
 <template>
-  <div id="app">
+  <div id="app" :class="dark ? 'theme-dark' : ''">
     <router-view />
   </div>
 </template>
-
+<script>
+export default {
+  data() {
+    return {
+      dark: false
+    };
+  },
+  created() {
+    this.dark = window.hilink && window.hilink.getDarkMode() === 2;
+    window.isDark = this.dark;
+    // createCb(this, ['rescb']);
+    // callHilinkFn('getDarkMode', ['0', 'rescb']);
+  },
+  methods: {
+    createCb(res) {}
+  }
+};
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -13,6 +38,14 @@
   color: #2c3e50;
 }
 
+a {
+  color: #dddddd;
+}
+theme-dark {
+  a {
+    color: #000;
+  }
+}
 #nav {
   padding: 30px;
 

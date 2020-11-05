@@ -4,28 +4,35 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-05 10:31:22
+ * @LastEditTime: 2020-10-23 11:43:31
 -->
 <template>
   <div class="temperature">
     <!-- Header -->
-    <!-- <v-header pageName="测量" :iconImg="iconImg" :hasIcon="false"></v-header> -->
+    <!-- <div class="header">
+      <v-header
+        pageName="测量"
+        :iconImg="iconImg"
+        @operation="getProper"
+        :hasIcon="true"
+      ></v-header>
+    </div> -->
     <!-- image -->
     <div class="info">
-      <img src="@/assets/image/public/omron.png" width="100%" alt="" />
+      <img src="@/assets/image/public/omron.png" width="80%" alt="" />
     </div>
     <!-- text -->
     <div class="steps">
       <p>已连接，准备测量</p>
       <ul>
-        <li>1.在设备底部安装电池。</li>
+        <li>1.将左臂伸入袖带，袖带空气管朝向手掌内侧。</li>
         <li>
-          2.屏幕上出现P字母，用APP进行搜索并点击。
+          2.上肘关节内侧往上10mm~20mm。
         </li>
         <li>
-          3.按下血压计的"开始/停止"按钮，开始测量。
+          3.使袖带空气管位于身体内侧。
         </li>
-        <li>4.手机将接收到来自设备的测量数据。</li>
+        <li>4.按测量键，发出‘滴’声，测量完成。</li>
       </ul>
       <div>完成以上操作后，请静待测量结果</div>
     </div>
@@ -41,11 +48,9 @@ export default {
       // characteristicId: "00002a35-0000-1000-8000-00805f9b34fb" //0x2a35
     };
   },
-  created() {
-    this.iconImg = require("@/assets/image/public/ic_public_close.png");
-  },
   mounted() {
     let that = this;
+    // that.hilink.setTitle(that.$t(''))
     that.deviceId = window.hilink.getDeviceId();
 
     window.changeBleConnectionStateCallback =
@@ -81,12 +86,10 @@ export default {
      * @description: 获取蓝牙状态
      * @param {*} res
      */
-
     getBluetoothAdapterStateCallback(res) {
       let data = JSON.parse(res);
       console.log("1.蓝牙当前状态", data);
     },
-
     /**
      * @description: 监听蓝牙连接状态的改变事件的回调函数
      * @param {res} 返回值
@@ -100,7 +103,6 @@ export default {
         console.log("连接失败");
       }
     },
-
     /**
      * @description: 监听服务发现状态
      * @param {res} 返回值
@@ -124,7 +126,6 @@ export default {
         console.log("特征值:", status);
       }
     },
-
     /**
      * 特征值变化的回调函数
      * @param {res} 返回值
@@ -132,6 +133,13 @@ export default {
     onBLECharacteristicValueChangeCallback(res) {
       let result = JSON.parse(res);
       console.log("4.特征值回调:", result);
+      //    {
+      //  deviceId: "93176c87-118d-4b7d-a5e2-732b8939ef1f",
+      //  serviceId: "",
+      //  characteristicId: "00002a35-0000-1000-8000-00805f9b34fb",
+      //  data: "1e5f003c004700e4070a130e15075900010600"  高压95   低压60 ，脉搏89
+      //     }
+      //this.parseData();
       if (
         result &&
         result.characteristicId === this.GLOBAL.INFO.CHARACTERISTIC_ID &&
@@ -144,20 +152,74 @@ export default {
         console.log("changeCharacteristicsState fail:" + res);
       }
     },
-
     /**
-     * @description: 解析数据
+     * 测量结果解析存储
      * @param {data}
      */
-
+    // parseData() {
+    //保存测量接口到数据平台
+    //   var dataParams = {
+    //     type: 10002,
+    //     dataTypeName: "com.huawei.instantaneous.blood_pressure",
+    //     startTime: 1488297600000,
+    //     endTime: 1488297600000,
+    //     value: {
+    //       diastolic: 99,
+    //       systolic: 99,
+    //       pulse: 98
+    //     }
+    //   };
+    //   console.log(JSON.stringify(dataParams));
+    //   window.saveFunctionCallback = this.saveFunctionCallback;
+    //   window.hilink.saveHealthData(
+    //     JSON.stringify(dataParams),
+    //     "saveFunctionCallback"
+    //   );
+    // },
+    /**
+     * @description:解析函数
+     * @param {data} 返回数据值
+     * @param {offset} 十六进制下标
+     */
+    substrData(data, offset) {
+      if (data) {
+        let valueData = data.substr(offset, 2);
+        return parseInt(valueData, 16);
+      }
+    },
     parseData(data) {
-      //解析bit第1位, 代表高压;
+      //代表单位
+      //let units = parseInt(data.substr(0, 2), 16).toString(2);
+      //   //解析bit第1位, 代表高压;
+      //   let highData = data.substr(2, 2);
+      //   //解析第3位，代表低压
+      //   let lowData = data.substr(6, 2);
+      //   //解析第14位，代表脉搏
+      //   let pulseBeat = data.substr(28, 2);
+      //   //时间
+      //   let year = new Date().getFullYear();
+      //   let months = data.substr(18, 2);
+      //   let days = data.substr(20, 2);
+      //   let hours = data.substr(22, 2);
+      //   let minus = data.substr(24, 2);
+      //   let seconds = data.substr(26, 2);
+
+      //   //  if (("000" + units).substr(0, 1) == 0) {
+      //   highData = parseInt(highData, 16);
+      //   console.log("高压: ", highData);
+      //   lowData = parseInt(lowData, 16);
+      //   console.log("低压: ", lowData);
+      //   pulseBeat = parseInt(pulseBeat, 16);
+      //   console.log("脉搏: ", pulseBeat);
+      //   //年月日时分秒
+      //   months = parseInt(months, 16);
+      //   days = parseInt(days, 16);
+      //   hours = parseInt(hours, 16);
+      //   minus = parseInt(minus, 16);
+      //   seconds = parseInt(seconds, 16);
       let highData = this.substrData(data, 2);
-      //解析第3位，代表低压
       let lowData = this.substrData(data, 6);
-      //解析第14位，代表脉搏
       let pulseBeat = this.substrData(data, 28);
-      //年月日时分秒
       let year = new Date().getFullYear();
       let months = this.substrData(data, 18);
       let days = this.substrData(data, 20);
@@ -199,8 +261,8 @@ export default {
         JSON.stringify(dataParams),
         "saveFunctionCallback"
       );
+      //  }
     },
-
     /**
      * 跳转到血压计二级页面
      * @param {type}
@@ -211,18 +273,6 @@ export default {
       window.location.href =
         "huaweischeme://healthapp/basicHealth?healthType=9";
       window.JsInteraction.closeWeb();
-    },
-
-    /**
-     * @description:解析私有协议函数
-     * @param {data} 返回数据值
-     * @param {offset} 十六进制下标
-     */
-    substrData(data, offset) {
-      if (data) {
-        let valueData = data.substr(offset, 2);
-        return parseInt(valueData, 16);
-      }
     }
   }
 };
@@ -232,8 +282,7 @@ export default {
   background: #fff;
   .info {
     width: 100%;
-    margin: 0px auto;
-    // margin-top: 80px;
+    margin: 20px auto;
   }
   .steps > p {
     color: #000;

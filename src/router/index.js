@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-09-25 17:42:53
+ * @LastEditTime: 2020-10-23 11:59:06
  */
 import Vue from "vue";
 import Router from "vue-router";
@@ -24,7 +24,7 @@ export default new Router({
       component: () => import("../views/CoffeeIndexOld.vue")
     },
     {
-      path: "/home",
+      path: "/Home",
       name: "Home",
       component: () => import("../views/Home.vue")
     },

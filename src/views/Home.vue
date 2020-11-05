@@ -36,9 +36,66 @@ export default {
     };
   },
   mounted() {
-    this.getUnRegisterDeviceFun();
+    //this.getUnRegisterDeviceFun();
+    let times = 2020 + "-" + 10 + "-" + 21 + " " + 14 + ":0" + 8 + ":0" + 8;
+    // console.log(times);
+    //时间转时间戳：
+    var date = new Date(times.replace(/-/g, "/"));
+    let time3 = Date.parse(date);
+    //console.log("时间转时间戳：", time3);
+
+    // console.log("时间戳转时间：", this.getYMDHMS());
+
+    let data = "";
+    let highData = this.substrData(data, 28);
+    console.log("highData", highData);
   },
   methods: {
+    substrData(data, offset) {
+      if (data) {
+        let valueData = data.substr(offset, 2);
+        return parseInt(valueData, 16);
+      }
+    },
+    //时间戳转时间：
+    getYMDHMS() {
+      let time = new Date(1603260488000);
+      let year = time.getFullYear();
+      let month = time.getMonth() + 1;
+      let date = time.getDate();
+      let hours = time.getHours();
+      let minute = time.getMinutes();
+      let second = time.getSeconds();
+
+      if (month < 10) {
+        month = "0" + month;
+      }
+      if (date < 10) {
+        date = "0" + date;
+      }
+      if (hours < 10) {
+        hours = "0" + hours;
+      }
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      if (second < 10) {
+        second = "0" + second;
+      }
+      return (
+        year +
+        "-" +
+        month +
+        "-" +
+        date +
+        " " +
+        hours +
+        ":" +
+        minute +
+        ":" +
+        second
+      );
+    },
     /**
      * 下载
      */
