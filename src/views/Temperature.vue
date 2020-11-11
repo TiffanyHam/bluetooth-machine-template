@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-05 15:03:10
+ * @LastEditTime: 2020-11-11 11:49:09
 -->
 <template>
   <div class="temperature">
@@ -16,18 +16,18 @@
     </div>
     <!-- text -->
     <div class="steps">
-      <p>已连接，准备测量</p>
+      <p>{{ $t("text.connect") }}</p>
       <ul>
-        <li>1.在设备底部安装电池。</li>
+        <li>{{ $t("text.list_t1") }}</li>
         <li>
-          2.屏幕上出现P字母，用APP进行搜索并点击。
+          {{ $t("text.list_t2") }}
         </li>
         <li>
-          3.按下血压计的"开始/停止"按钮，开始测量。
+          {{ $t("text.list_t3") }}
         </li>
-        <li>4.手机将接收到来自设备的测量数据。</li>
+        <li>{{ $t("text.list_t4") }}</li>
       </ul>
-      <div>完成以上操作后，请静待测量结果</div>
+      <div>{{ $t("text.wait") }}</div>
     </div>
   </div>
 </template>

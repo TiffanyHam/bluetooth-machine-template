@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-10 17:13:34
+ * @LastEditTime: 2020-11-10 16:31:32
 -->
 <template>
   <div class="temperature">
@@ -55,6 +55,11 @@ export default {
     window.getBluetoothAdapterStateCallback =
       that.getBluetoothAdapterStateCallback;
 
+    // window.getCurrentRegisteredDeviceCallback =
+    //   that.getCurrentRegisteredDeviceCallback;
+
+    //  window.onBluetoothDeviceFoundCallback = that.onBluetoothDeviceFoundCallback;
+
     //监听蓝牙状态变化，在手机上开启或关闭蓝牙时会触发
     window.hilink.onBluetoothAdapterStateChange(
       "onBluetoothAdapterStateChangeCallback"
@@ -65,6 +70,15 @@ export default {
     );
     //获取当前蓝牙模块状态，判断当前蓝牙是否处于打开状态
     window.hilink.getBluetoothAdapterState("getBluetoothAdapterStateCallback");
+
+    // 获取宫格页面中选择的已注册的设备
+    // window.hilink.getCurrentRegisteredDevice(
+    //   "getCurrentRegisteredDeviceCallback"
+    // );
+    // window.hilink.closeBLEConnection(that.deviceId); //断开之前蓝牙连接
+    // window.hilink.stopBluetoothDevicesDiscovery(); //清空之前扫描的结果
+    //  window.hilink.onBluetoothDeviceFound("onBluetoothDeviceFoundCallback"); //监听寻找到新设备的事件
+    //  window.hilink.startBluetoothDevicesDiscovery([], false, 1); //搜寻附近的蓝牙外围设备
   },
   methods: {
     /**
@@ -171,7 +185,13 @@ export default {
         this.readCharacteristicId,
         true
       );
-      console.log("特征值:", status);
+      console.log(
+        "特征值",
+        this.deviceId,
+        this.serviceId,
+        this.readCharacteristicId,
+        status
+      );
       window.hilink.onBLECharacteristicValueChange(
         "onBLECharacteristicValueChangeCallback"
       );
