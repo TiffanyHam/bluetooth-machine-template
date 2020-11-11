@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-11 11:49:09
+ * @LastEditTime: 2020-11-11 16:15:16
 -->
 <template>
   <div class="temperature">
@@ -253,6 +253,7 @@ export default {
   .steps > div {
     color: rgba(0, 0, 0, 0.5);
     font-size: 14px;
+    margin: 0px 30px 0px 30px;
   }
 }
 </style>

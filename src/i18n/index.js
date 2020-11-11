@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-11-11 11:25:24
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-11 11:27:07
+ * @LastEditTime: 2020-11-11 16:15:36
  */
 import Vue from "vue";
 import VueI18n from "vue-i18n";

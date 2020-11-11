@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-09 10:10:07
+ * @LastEditTime: 2020-11-11 11:51:43
  */
 import Vue from "vue";
 import Router from "vue-router";
@@ -29,7 +29,7 @@ export default new Router({
       component: () => import("../views/Home.vue")
     },
     {
-      path: "/Temperature",
+      path: "/",
       name: "Temperature",
       component: () => import("../views/Temperature.vue")
     },
@@ -39,7 +39,7 @@ export default new Router({
       component: () => import("../views/openApp.vue")
     },
     {
-      path: "/",
+      path: "/toothbrush",
       name: "toothbrush",
       component: () => import("../views/toothbrush.vue")
     }
