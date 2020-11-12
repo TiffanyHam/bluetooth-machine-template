@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-11 11:37:27
+ * @LastEditTime: 2020-11-12 10:30:06
  */
 import Vue from "vue";
 import App from "./App.vue";
@@ -46,3 +46,17 @@ new Vue({
   i18n,
   render: h => h(App)
 }).$mount("#app");
+
+//title国际化
+export const setPageTitleTxt = meta => {
+  const { label } = meta;
+  if (label) {
+    document.title = i18n.t(label);
+  }
+};
+
+// 当路由跳转结束后
+router.afterEach((to, form) => {
+  // 设置title
+  setPageTitleTxt(to.meta);
+});

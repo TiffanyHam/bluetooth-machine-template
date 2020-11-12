@@ -4,22 +4,20 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 11:23:10
+ * @LastEditTime: 2020-11-11 17:27:23
 -->
 <template>
   <div class="temperature">
     <!-- Header -->
     <!-- <v-header pageName="测量" :iconImg="iconImg" :hasIcon="false"></v-header> -->
     <!-- image -->
-    <div class="temperature_data">
-      {{ temperature_data }}<span>{{ $t("text.uint") }}</span>
-    </div>
+    <div>{{ temperature_data }}</div>
     <div class="info">
       <img src="@/assets/image/public/omron.png" width="80%" alt="" />
     </div>
     <!-- text -->
     <div class="steps">
-      <!-- <p>{{ $t("text.connect") }}</p> -->
+      <p>{{ $t("text.connect") }}</p>
       <ul>
         <li>{{ $t("text.list_t1") }}</li>
         <li>
@@ -30,11 +28,7 @@
         </li>
         <li>{{ $t("text.list_t4") }}</li>
       </ul>
-      <!-- <div>{{ $t("text.wait") }}</div> -->
-    </div>
-    <!-- 历史记录 -->
-    <div class="history_list">
-      <button @click="getRecords">{{ $t("text.history") }}</button>
+      <div>{{ $t("text.wait") }}</div>
     </div>
   </div>
 </template>
@@ -44,9 +38,7 @@ export default {
     return {
       iconImg: "",
       deviceId: "",
-      temperature_data: "--/--",
-      highData: "",
-      lowData: ""
+      temperature_data: "---"
       // serviceId: "00001810-0000-1000-8000-00805f9b34fb", //0x1810
       // characteristicId: "00002a35-0000-1000-8000-00805f9b34fb" //0x2a35
     };
@@ -55,6 +47,7 @@ export default {
     this.iconImg = require("@/assets/image/public/ic_public_close.png");
   },
   mounted() {
+    // setTimeout(() => {
     let that = this;
     that.deviceId = window.hilink.getDeviceId();
 
@@ -70,10 +63,9 @@ export default {
     window.onBLECharacteristicValueChangeCallback =
       that.onBLECharacteristicValueChangeCallback;
 
-    //获取当前蓝牙模块状态，判断当前蓝牙是否处于打开状态
+    //判断手机蓝牙状态的回调
     window.hilink.getBluetoothAdapterState("getBluetoothAdapterStateCallback");
-
-    //监听连接蓝牙设备的结果，在创建蓝牙设备连接时，可以得到连接结果。
+    //注册蓝牙连接的回调
     window.hilink.onBLEConnectionStateChange(
       "changeBleConnectionStateCallback"
     );
@@ -86,6 +78,7 @@ export default {
     );
     //创建蓝牙连接
     window.hilink.createBLEConnection(that.deviceId);
+    // }, 10000); //10秒
   },
   methods: {
     /**
@@ -143,17 +136,17 @@ export default {
     onBLECharacteristicValueChangeCallback(res) {
       let result = JSON.parse(res);
       console.log("4.特征值回调:", result);
-      //   if (
-      //     result &&
-      //     result.characteristicId === this.GLOBAL.INFO.CHARACTERISTIC_ID &&
-      //     result.data &&
-      //     result.data.length > 14
-      //   ) {
-      //开始解析数据
-      this.parseData(result.data);
-      //   } else {
-      //     console.log("changeCharacteristicsState fail:" + res);
-      //   }
+      if (
+        result &&
+        result.characteristicId === this.GLOBAL.INFO.CHARACTERISTIC_ID &&
+        result.data &&
+        result.data.length > 14
+      ) {
+        //开始解析数据
+        this.parseData(result.data);
+      } else {
+        console.log("changeCharacteristicsState fail:" + res);
+      }
     },
 
     /**
@@ -163,12 +156,9 @@ export default {
 
     parseData(data) {
       //解析bit第1位, 代表高压;
-      this.highData = this.substrData(data, 2);
-      console.log(this.highData);
+      let highData = this.substrData(data, 2);
       //解析第3位，代表低压
-      this.lowData = this.substrData(data, 6);
-      console.log(this.lowData);
-
+      let lowData = this.substrData(data, 6);
       //解析第14位，代表脉搏
       let pulseBeat = this.substrData(data, 28);
       //年月日时分秒
@@ -202,8 +192,8 @@ export default {
         startTime: timestamp,
         endTime: timestamp,
         value: {
-          systolic: this.highData, //收缩压（高压）
-          diastolic: this.lowData, //舒张压（低压）
+          systolic: highData, //收缩压（高压）
+          diastolic: lowData, //舒张压（低压）
           pulse: pulseBeat //脉搏
         }
       };
@@ -213,9 +203,6 @@ export default {
         JSON.stringify(dataParams),
         "saveFunctionCallback"
       );
-      this.temperature_data = this.highData + "/" + this.lowData;
-      console.log("温度" + (this.highData + "/" + this.lowData));
-      this.$forceUpdate();
     },
 
     /**
@@ -225,12 +212,6 @@ export default {
     saveFunctionCallback(res) {
       let result = JSON.parse(res);
       console.log("5.saveHealthData回调:", result);
-
-      //   window.location.href =
-      //     "huaweischeme://healthapp/basicHealth?healthType=9";
-      //   window.JsInteraction.closeWeb();
-    },
-    getRecords() {
       window.location.href =
         "huaweischeme://healthapp/basicHealth?healthType=9";
       window.JsInteraction.closeWeb();
@@ -269,43 +250,12 @@ export default {
     margin: 20px 30px 30px 30px;
     line-height: 28px;
     color: rgba(0, 0, 0, 0.5);
-    font-size: 12px;
+    font-size: 14px;
   }
   .steps > div {
     color: rgba(0, 0, 0, 0.5);
     font-size: 14px;
     margin: 0px 30px 0px 30px;
-  }
-  .history_list {
-    position: fixed;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    background: #fff;
-    left: 0;
-    right: 0;
-    height: 60px;
-  }
-  .history_list button {
-    background: #fe5401;
-    color: #fff;
-    border-radius: 20px;
-    border: 0;
-    height: 40px;
-    padding: 0 45px;
-    margin-top: 10px;
-    font-size: 16px;
-  }
-  .temperature_data {
-    height: 40px;
-    line-height: 40px;
-    color: #fb5f19;
-    font-size: 28px;
-    margin: 30px 0 20px 0;
-  }
-  .temperature_data span {
-    font-size: 14px;
-    margin-left: 6px;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-05 10:49:08
+ * @LastEditTime: 2020-11-11 18:43:50
 -->
 <template>
   <div id="app">
@@ -12,11 +12,15 @@
   </div>
 </template>
 <script>
+import { getLanguage } from "./utils/tool";
+
 export default {
   data() {
     return {};
   },
   created() {
+    this.$i18n.locale = getLanguage();
+
     // this.dark = window.hilink && window.hilink.getDarkMode() === 2;
     // window.isDark = this.dark;
     // createCb(this, ['rescb']);
