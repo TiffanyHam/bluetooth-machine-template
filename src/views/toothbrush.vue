@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-10 17:13:34
+ * @LastEditTime: 2020-11-12 19:03:39
 -->
 <template>
   <div class="temperature">
@@ -81,7 +81,7 @@ export default {
 
     onBluetoothAdapterStateChangeCallback(res) {
       let data = JSON.parse(res);
-      console.log("1.监听蓝牙变化:");
+      console.log("1.监听蓝牙变化");
     },
     /**
      * @description: 监听连接蓝牙设备的结果回调

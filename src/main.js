@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 10:30:06
+ * @LastEditTime: 2020-11-13 11:29:44
  */
 import Vue from "vue";
 import App from "./App.vue";
@@ -26,7 +26,8 @@ import {
   Loading,
   Collapse,
   CollapseItem,
-  Slider
+  Slider,
+  Dialog
 } from "vant";
 import "vant/lib/index.css";
 
@@ -37,6 +38,7 @@ Vue.use(Icon);
 Vue.use(Collapse);
 Vue.use(CollapseItem);
 Vue.use(Slider);
+Vue.use(Dialog);
 
 Vue.config.productionTip = false;
 eruda.init(); // eruda初始化

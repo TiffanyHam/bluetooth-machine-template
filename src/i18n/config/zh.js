@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-11-11 11:25:24
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 09:34:20
+ * @LastEditTime: 2020-11-12 16:25:10
  */
 const zh = {
   text: {
@@ -19,7 +19,7 @@ const zh = {
     history: "血压历史记录"
   },
   router: {
-    temperature: "欧姆龙血压计"
+    broodPressure: "欧姆龙血压计"
   }
 };
 export default zh;

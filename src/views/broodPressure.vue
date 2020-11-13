@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 11:23:10
+ * @LastEditTime: 2020-11-13 15:09:41
 -->
 <template>
   <div class="temperature">
@@ -36,6 +36,9 @@
     <div class="history_list">
       <button @click="getRecords">{{ $t("text.history") }}</button>
     </div>
+    <van-dialog v-model="show" title="">
+      <div class="connect">{{ $t(connectBle) }}</div>
+    </van-dialog>
   </div>
 </template>
 <script>
@@ -45,18 +48,26 @@ export default {
       iconImg: "",
       deviceId: "",
       temperature_data: "--/--",
-      highData: "",
-      lowData: ""
-      // serviceId: "00001810-0000-1000-8000-00805f9b34fb", //0x1810
-      // characteristicId: "00002a35-0000-1000-8000-00805f9b34fb" //0x2a35
+      getHighData: "",
+      getLowData: "",
+      serviceId: "00001810-0000-1000-8000-00805f9b34fb", //0x1810
+      characteristicId: "00002a35-0000-1000-8000-00805f9b34fb", //0x2a35
+      readCharacteristicId: "00002a49-0000-1000-8000-00805f9b34fb",
+      show: true,
+      connectBle: ""
     };
   },
   created() {
     this.iconImg = require("@/assets/image/public/ic_public_close.png");
   },
+  update() {},
   mounted() {
+    // var t = setInterval(function() {
+    //   console.log(88888);
     let that = this;
     that.deviceId = window.hilink.getDeviceId();
+    window.onBluetoothAdapterStateChangeCallback =
+      that.onBluetoothAdapterStateChangeCallback;
 
     window.changeBleConnectionStateCallback =
       that.changeBleConnectionStateCallback;
@@ -66,38 +77,36 @@ export default {
 
     window.getBluetoothAdapterStateCallback =
       that.getBluetoothAdapterStateCallback;
-
     window.onBLECharacteristicValueChangeCallback =
       that.onBLECharacteristicValueChangeCallback;
 
-    //获取当前蓝牙模块状态，判断当前蓝牙是否处于打开状态
-    window.hilink.getBluetoothAdapterState("getBluetoothAdapterStateCallback");
-
+    //监听蓝牙状态变化，在手机上开启或关闭蓝牙时会触发
+    window.hilink.onBluetoothAdapterStateChange(
+      "onBluetoothAdapterStateChangeCallback"
+    );
     //监听连接蓝牙设备的结果，在创建蓝牙设备连接时，可以得到连接结果。
     window.hilink.onBLEConnectionStateChange(
       "changeBleConnectionStateCallback"
     );
     //注册发现服务的回调
     window.hilink.onBLEServicesDiscovered("onBLEServicesDiscoveredCallback");
-
     //监听特征值变化的回调
     window.hilink.onBLECharacteristicValueChange(
       "onBLECharacteristicValueChangeCallback"
     );
     //创建蓝牙连接
     window.hilink.createBLEConnection(that.deviceId);
+    // }, 3000);
   },
   methods: {
     /**
      * @description: 获取蓝牙状态
      * @param {*} res
      */
-
     getBluetoothAdapterStateCallback(res) {
       let data = JSON.parse(res);
-      console.log("1.蓝牙当前状态", data);
+      console.log("100000000000000000000000.蓝牙当前状态", data);
     },
-
     /**
      * @description: 监听蓝牙连接状态的改变事件的回调函数
      * @param {res} 返回值
@@ -106,12 +115,13 @@ export default {
       let data = JSON.parse(res);
       console.log("2.连接监听结果", data);
       if (data.connected) {
-        console.log("已连接");
+        this.connectBle = "蓝牙已连接";
+        this.show = false;
       } else {
-        console.log("连接失败");
+        this.connectBle = "蓝牙已断开";
+        this.show = true;
       }
     },
-
     /**
      * @description: 监听服务发现状态
      * @param {res} 返回值
@@ -133,9 +143,16 @@ export default {
           "characteristicId333:" + that.GLOBAL.INFO.CHARACTERISTIC_ID
         );
         console.log("特征值:", status);
+        // window.hilink.onBLECharacteristicValueChange(
+        //   "onBLECharacteristicValueChangeCallback"
+        // );
+        // window.onBLECharacteristicValueChangeCallback = res => {
+        //   let result = JSON.parse(res);
+        //   console.log("4.特征值回调:", result);
+        //   this.parseData(result.data);
+        // };
       }
     },
-
     /**
      * 特征值变化的回调函数
      * @param {res} 返回值
@@ -143,32 +160,29 @@ export default {
     onBLECharacteristicValueChangeCallback(res) {
       let result = JSON.parse(res);
       console.log("4.特征值回调:", result);
-      //   if (
-      //     result &&
-      //     result.characteristicId === this.GLOBAL.INFO.CHARACTERISTIC_ID &&
-      //     result.data &&
-      //     result.data.length > 14
-      //   ) {
-      //开始解析数据
-      this.parseData(result.data);
-      //   } else {
-      //     console.log("changeCharacteristicsState fail:" + res);
-      //   }
+      if (
+        result &&
+        result.characteristicId === this.GLOBAL.INFO.CHARACTERISTIC_ID &&
+        result.data &&
+        result.data.length > 14
+      ) {
+        //开始解析数据
+        this.parseData(result.data);
+      } else {
+        console.log("changeCharacteristicsState fail:" + res);
+      }
     },
-
     /**
      * @description: 解析数据
      * @param {data}
      */
-
     parseData(data) {
       //解析bit第1位, 代表高压;
-      this.highData = this.substrData(data, 2);
-      console.log(this.highData);
+      let highData = this.substrData(data, 2);
       //解析第3位，代表低压
-      this.lowData = this.substrData(data, 6);
-      console.log(this.lowData);
-
+      let lowData = this.substrData(data, 6);
+      localStorage.setItem("getHighData", highData);
+      localStorage.setItem("getLowData", lowData);
       //解析第14位，代表脉搏
       let pulseBeat = this.substrData(data, 28);
       //年月日时分秒
@@ -202,22 +216,22 @@ export default {
         startTime: timestamp,
         endTime: timestamp,
         value: {
-          systolic: this.highData, //收缩压（高压）
-          diastolic: this.lowData, //舒张压（低压）
+          systolic: highData, //收缩压（高压）
+          diastolic: lowData, //舒张压（低压）
           pulse: pulseBeat //脉搏
         }
       };
       console.log(JSON.stringify(dataParams));
+      this.getHighData = localStorage.getItem("getHighData");
+      this.getLowData = localStorage.getItem("getLowData");
+      this.temperature_data = this.getHighData + "/" + this.getLowData;
+      console.log("温度2" + (this.getHighData + "/" + this.getLowData));
       window.saveFunctionCallback = this.saveFunctionCallback;
       window.hilink.saveHealthData(
         JSON.stringify(dataParams),
         "saveFunctionCallback"
       );
-      this.temperature_data = this.highData + "/" + this.lowData;
-      console.log("温度" + (this.highData + "/" + this.lowData));
-      this.$forceUpdate();
     },
-
     /**
      * 跳转到血压计二级页面
      * @param {type}
@@ -225,7 +239,6 @@ export default {
     saveFunctionCallback(res) {
       let result = JSON.parse(res);
       console.log("5.saveHealthData回调:", result);
-
       //   window.location.href =
       //     "huaweischeme://healthapp/basicHealth?healthType=9";
       //   window.JsInteraction.closeWeb();
@@ -233,9 +246,7 @@ export default {
     getRecords() {
       window.location.href =
         "huaweischeme://healthapp/basicHealth?healthType=9";
-      window.JsInteraction.closeWeb();
     },
-
     /**
      * @description:解析私有协议函数
      * @param {data} 返回数据值
@@ -306,6 +317,9 @@ export default {
   .temperature_data span {
     font-size: 14px;
     margin-left: 6px;
+  }
+  .connect {
+    padding: 20px;
   }
 }
 </style>

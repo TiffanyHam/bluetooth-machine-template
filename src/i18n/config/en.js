@@ -22,7 +22,7 @@ const en = {
     history: "Blood pressure history"
   },
   router: {
-    temperature: "Omron blood pressure monitor"
+    broodPressure: "Omron blood pressure monitor"
   }
 };
 export default en;
