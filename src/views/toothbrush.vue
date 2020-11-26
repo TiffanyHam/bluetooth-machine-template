@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 19:03:39
+ * @LastEditTime: 2020-11-16 14:36:18
 -->
 <template>
   <div class="temperature">
@@ -35,7 +35,8 @@ export default {
       data: "010941000A",
       serviceId: "0000ffb0-0000-1000-8000-00805f9b34fb",
       writeCharacteristicId: "0000ffb1-0000-1000-8000-00805f9b34fb",
-      readCharacteristicId: "0000ffb2-0000-1000-8000-00805f9b34fb"
+      readCharacteristicId: "0000ffb2-0000-1000-8000-00805f9b34fb",
+      readCharacteristicId1: "00000x56-0000-1000-8000-00805f9b34fb"
       //   services: [
       //     "0000ffb0-0000-1000-8000-00805f9b34fb",
       //     "0000ffb1-0000-1000-8000-00805f9b34fb",
@@ -165,17 +166,13 @@ export default {
 
     readValue() {
       this.disabled = true;
-      let status = window.hilink.notifyBLECharacteristicValueChange(
+      window.hilink.readBLECharacteristicValue(
         this.deviceId,
         this.serviceId,
-        this.readCharacteristicId,
-        true
+        this.readCharacteristicId1,
+        "readBLECharacteristicValueCallback"
       );
-      console.log("特征值:", status);
-      window.hilink.onBLECharacteristicValueChange(
-        "onBLECharacteristicValueChangeCallback"
-      );
-      window.onBLECharacteristicValueChangeCallback = res => {
+      window.readBLECharacteristicValueCallback = res => {
         this.disabled = false;
         let result = JSON.parse(res);
         console.log(
@@ -183,6 +180,24 @@ export default {
           result
         );
       };
+      //   let status = window.hilink.notifyBLECharacteristicValueChange(
+      //     this.deviceId,
+      //     this.serviceId,
+      //     this.readCharacteristicId,
+      //     true
+      //   );
+      //   console.log("特征值:", status);
+      //   window.hilink.onBLECharacteristicValueChange(
+      //     "onBLECharacteristicValueChangeCallback"
+      //   );
+      //   window.onBLECharacteristicValueChangeCallback = res => {
+      //     this.disabled = false;
+      //     let result = JSON.parse(res);
+      //     console.log(
+      //       "onBLECharacteristicValueChangeCallback特征值回调:",
+      //       result
+      //     );
+      //   };
     }
   }
 };

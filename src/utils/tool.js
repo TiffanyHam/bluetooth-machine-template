@@ -4,11 +4,11 @@
  * @Author: Tiffany
  * @Date: 2020-11-11 18:42:29
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-13 15:10:04
+ * @LastEditTime: 2020-11-26 16:10:22
  */
 export const getLanguage = () => {
   let language;
-  let defualtLanguage = "en";
+  let defualtLanguage = "zh";
   // let language = window.hilink.getAppLanguage();
   let reg = /^zh-/i;
   if (navigator && navigator.language) {

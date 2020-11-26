@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 18:02:25
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-10-19 16:22:52
+ * @LastEditTime: 2020-11-17 14:30:30
  */
 const INFO = {
   SERVICE_ID: "00001810-0000-1000-8000-00805f9b34fb", //蓝牙特征值对应服务的 uuid

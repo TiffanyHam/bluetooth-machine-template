@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-11-11 11:25:24
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 16:25:10
+ * @LastEditTime: 2020-11-25 15:33:46
  */
 const zh = {
   text: {
@@ -16,7 +16,8 @@ const zh = {
     list_t3: " 3.按下血压计的'开始/停止'按钮，开始测量。",
     list_t4: "4.手机将接收到来自设备的测量数据。",
     wait: "完成以上操作后，请静待测量结果",
-    history: "血压历史记录"
+    history: "血压历史记录",
+    connectAlready: "蓝牙已连接"
   },
   router: {
     broodPressure: "欧姆龙血压计"

@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-11 18:43:50
+ * @LastEditTime: 2020-11-26 16:09:41
 -->
 <template>
   <div id="app">
@@ -20,6 +20,10 @@ export default {
   },
   created() {
     this.$i18n.locale = getLanguage();
+    document.title =
+      this.$i18n.locale === "zh"
+        ? "欧姆龙血压计"
+        : "Omron blood pressure monitor";
 
     // this.dark = window.hilink && window.hilink.getDarkMode() === 2;
     // window.isDark = this.dark;

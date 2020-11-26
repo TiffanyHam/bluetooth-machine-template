@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-08-26 17:41:01
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-12 16:24:57
+ * @LastEditTime: 2020-11-26 16:04:18
  */
 import Vue from "vue";
 import Router from "vue-router";
@@ -31,11 +31,11 @@ export default new Router({
     {
       path: "/",
       name: "broodPressure",
-      component: () => import("../views/broodPressure.vue"),
-      meta: {
-        title: "欧姆龙血压计",
-        label: "router.broodPressure"
-      }
+      component: () => import("../views/broodPressure.vue")
+      //   meta: {
+      //     title: this.$t("broodPressure"),
+      //     label: "router.broodPressure"
+      //   }
     },
     {
       path: "/openApp",

@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-09-25 17:33:45
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-13 15:09:41
+ * @LastEditTime: 2020-11-25 17:37:24
 -->
 <template>
   <div class="temperature">
@@ -36,9 +36,9 @@
     <div class="history_list">
       <button @click="getRecords">{{ $t("text.history") }}</button>
     </div>
-    <van-dialog v-model="show" title="">
-      <div class="connect">{{ $t(connectBle) }}</div>
-    </van-dialog>
+    <!-- <van-dialog v-model="show" title="">
+      <div class="connect">{{ connectBle[show] }}</div>
+    </van-dialog> -->
   </div>
 </template>
 <script>
@@ -50,11 +50,13 @@ export default {
       temperature_data: "--/--",
       getHighData: "",
       getLowData: "",
-      serviceId: "00001810-0000-1000-8000-00805f9b34fb", //0x1810
-      characteristicId: "00002a35-0000-1000-8000-00805f9b34fb", //0x2a35
-      readCharacteristicId: "00002a49-0000-1000-8000-00805f9b34fb",
-      show: true,
-      connectBle: ""
+      serviceId: "", //0x1810
+      characteristicId: "", //0x2a35
+      readCharacteristicId: "00002a2b-0000-1000-8000-00805f9b34fb",
+      // show: true,
+      //  connectBle: "",
+      connectBle: this.$t("text.connectAlready"),
+      operate: 2
     };
   },
   created() {
@@ -62,28 +64,30 @@ export default {
   },
   update() {},
   mounted() {
-    // var t = setInterval(function() {
-    //   console.log(88888);
+    // let data = "e4070b110f3b13000001";
+    // let string = data.substr(0, 2);
+    // let string1 = data.substr(2, 2);
+    // let string2 = data.substr(4);
+    // let newData = string1 + string + string2;
+
+    // console.log("年", parseInt(newData.substr(0, 4), 16));
+    // console.log("月", parseInt(newData.substr(4, 2), 16));
+    // console.log("日", parseInt(newData.substr(6, 2), 16));
+    // console.log("时", parseInt(newData.substr(8, 2), 16));
+    // console.log("分", parseInt(newData.substr(10, 2), 16));
+    // console.log("秒", parseInt(newData.substr(12, 2), 16));
+
     let that = this;
     that.deviceId = window.hilink.getDeviceId();
-    window.onBluetoothAdapterStateChangeCallback =
-      that.onBluetoothAdapterStateChangeCallback;
-
     window.changeBleConnectionStateCallback =
       that.changeBleConnectionStateCallback;
-
     window.onBLEServicesDiscoveredCallback =
       that.onBLEServicesDiscoveredCallback;
-
     window.getBluetoothAdapterStateCallback =
       that.getBluetoothAdapterStateCallback;
     window.onBLECharacteristicValueChangeCallback =
       that.onBLECharacteristicValueChangeCallback;
 
-    //监听蓝牙状态变化，在手机上开启或关闭蓝牙时会触发
-    window.hilink.onBluetoothAdapterStateChange(
-      "onBluetoothAdapterStateChangeCallback"
-    );
     //监听连接蓝牙设备的结果，在创建蓝牙设备连接时，可以得到连接结果。
     window.hilink.onBLEConnectionStateChange(
       "changeBleConnectionStateCallback"
@@ -96,7 +100,6 @@ export default {
     );
     //创建蓝牙连接
     window.hilink.createBLEConnection(that.deviceId);
-    // }, 3000);
   },
   methods: {
     /**
@@ -105,7 +108,7 @@ export default {
      */
     getBluetoothAdapterStateCallback(res) {
       let data = JSON.parse(res);
-      console.log("100000000000000000000000.蓝牙当前状态", data);
+      console.log("1.蓝牙当前状态", data);
     },
     /**
      * @description: 监听蓝牙连接状态的改变事件的回调函数
@@ -115,13 +118,14 @@ export default {
       let data = JSON.parse(res);
       console.log("2.连接监听结果", data);
       if (data.connected) {
-        this.connectBle = "蓝牙已连接";
-        this.show = false;
+        // this.connectBle = this.$t("text.connectAlready");
+        //  this.show = false;
       } else {
-        this.connectBle = "蓝牙已断开";
-        this.show = true;
+        //  this.connectBle = this.$t("text.connectAlready");
+        // this.show = true;
       }
     },
+    readBLECharacteristicValue() {},
     /**
      * @description: 监听服务发现状态
      * @param {res} 返回值
@@ -131,26 +135,33 @@ export default {
       let data = JSON.parse(res);
       console.log("3.发现服务", res);
       if (data.errCode === "0") {
+        if (that.operate == 1) {
+          //当前时间服务ID
+          that.serviceId = "00001805-0000-1000-8000-00805f9b34fb";
+          this.characteristicId = "00002a2b-0000-1000-8000-00805f9b34fb";
+        } else if (that.operate == 2) {
+          //电量服务ID
+          that.serviceId = "0000180f-0000-1000-8000-00805f9b34fb";
+          that.characteristicId = "00002a19-0000-1000-8000-00805f9b34fb";
+        } else if (that.operate == 3) {
+          //控制点
+        } else {
+          //血压计服务ID
+          that.serviceId = "00001810-0000-1000-8000-00805f9b34fb";
+          that.characteristicId = "00002a35-0000-1000-8000-00805f9b34fb";
+        }
         let status = window.hilink.notifyBLECharacteristicValueChange(
           that.deviceId,
-          that.GLOBAL.INFO.SERVICE_ID,
-          that.GLOBAL.INFO.CHARACTERISTIC_ID,
+          that.serviceId,
+          that.characteristicId,
           true
         );
         console.log(
           "deviceId:" + that.deviceId,
-          "serviceId2222:" + that.GLOBAL.INFO.SERVICE_ID,
-          "characteristicId333:" + that.GLOBAL.INFO.CHARACTERISTIC_ID
+          "serviceId:" + that.serviceId,
+          "characteristicId:" + that.characteristicId
         );
-        console.log("特征值:", status);
-        // window.hilink.onBLECharacteristicValueChange(
-        //   "onBLECharacteristicValueChangeCallback"
-        // );
-        // window.onBLECharacteristicValueChangeCallback = res => {
-        //   let result = JSON.parse(res);
-        //   console.log("4.特征值回调:", result);
-        //   this.parseData(result.data);
-        // };
+        console.log("4.特征值:", status);
       }
     },
     /**
@@ -159,39 +170,91 @@ export default {
      */
     onBLECharacteristicValueChangeCallback(res) {
       let result = JSON.parse(res);
-      console.log("4.特征值回调:", result);
+      console.log("5.特征值回调:", result);
       if (
         result &&
         result.characteristicId === this.GLOBAL.INFO.CHARACTERISTIC_ID &&
         result.data &&
         result.data.length > 14
       ) {
-        //开始解析数据
+        //拿到血压数据  开始解析数据
         this.parseData(result.data);
       } else {
-        console.log("changeCharacteristicsState fail:" + res);
+        if (this.operate == 1) {
+          //获取设备时间
+          this.getTimeData(result.data);
+        } else if (this.operate == 2) {
+          this.batteryData(result.data);
+        }
       }
     },
+
     /**
-     * @description: 解析数据
+     * @description: 电池解析
+     * @param {*}
+     */
+
+    batteryData(data) {
+      let battery = parseInt(data, 16);
+      console.log("电池" + battery + "%");
+    },
+    /**
+     * @description: 获取设备时间解析
+     * @param {*} data
+     */
+
+    getTimeData(data) {
+      let string = data.substr(0, 2);
+      let string1 = data.substr(2, 2);
+      let string2 = data.substr(4);
+      let newData = string1 + string + string2;
+      //年月日时分秒
+      let year = parseInt(newData.substr(0, 4), 16);
+      let months = this.substrData(newData, 4);
+      let days = this.substrData(newData, 6);
+      let hours = this.substrData(newData, 8);
+      let minus = this.substrData(newData, 10);
+      let seconds = this.substrData(newData, 13);
+      console.log(
+        "设备时间：",
+        year +
+          "-" +
+          months +
+          "-" +
+          days +
+          " " +
+          hours +
+          "：" +
+          minus +
+          "：" +
+          seconds
+      );
+    },
+    /**
+     * @description: 解析血压计数据
      * @param {data}
      */
     parseData(data) {
+      let string = data.substr(0, 2);
+      let string1 = data.substr(2, 2);
+      let string2 = data.substr(4);
+      let newData = string1 + string + string2;
       //解析bit第1位, 代表高压;
-      let highData = this.substrData(data, 2);
+      let highData = this.substrData(newData, 2);
       //解析第3位，代表低压
-      let lowData = this.substrData(data, 6);
+      let lowData = this.substrData(newData, 6);
       localStorage.setItem("getHighData", highData);
       localStorage.setItem("getLowData", lowData);
       //解析第14位，代表脉搏
-      let pulseBeat = this.substrData(data, 28);
+      let pulseBeat = this.substrData(newData, 28);
       //年月日时分秒
-      let year = new Date().getFullYear();
-      let months = this.substrData(data, 18);
-      let days = this.substrData(data, 20);
-      let hours = this.substrData(data, 22);
-      let minus = this.substrData(data, 24);
-      let seconds = this.substrData(data, 26);
+      let year = parseInt(newData.substr(0, 4), 16);
+      console.log("nian", year);
+      let months = this.substrData(newData, 18);
+      let days = this.substrData(newData, 20);
+      let hours = this.substrData(newData, 22);
+      let minus = this.substrData(newData, 24);
+      let seconds = this.substrData(newData, 26);
       let times =
         year +
         "-" +
