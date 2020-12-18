@@ -4,7 +4,7 @@
  * @Author: Tiffany
  * @Date: 2020-11-11 18:42:29
  * @LastEditors: Tiffany
- * @LastEditTime: 2020-11-26 16:10:22
+ * @LastEditTime: 2020-12-17 15:01:57
  */
 export const getLanguage = () => {
   let language;
